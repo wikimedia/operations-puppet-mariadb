@@ -6,12 +6,18 @@ define mariadb::monitor_replication(
     $lag_warn      = 60,
     $lag_crit      = 300,
     $socket        = '/tmp/mysql.sock',
+    $multisource   = true,
     ) {
 
     include passwords::nagios::mysql
     $password = $passwords::nagios::mysql::mysql_check_pass
 
-    $check_mariadb = "/usr/lib/nagios/plugins/check_mariadb.pl --sock=${socket} --user=nagios --pass=${password} --set=default_master_connection=${name}"
+    $check_command = "/usr/lib/nagios/plugins/check_mariadb.pl --sock=${socket} --user=nagios --pass=${password}"
+
+    $check_mariadb = $multisource ? {
+        true  => "${check_command} --set=default_master_connection=${name}",
+        false => "${check_command}"
+    }
 
     nrpe::monitor_service { "mariadb_slave_io_state_${name}":
         description   => "MariaDB Slave IO: ${name}",
