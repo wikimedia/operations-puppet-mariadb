@@ -7,6 +7,7 @@ class mariadb::config(
     $password = 'undefined',
     $datadir  = '/srv/sqldata',
     $tmpdir   = '/srv/tmp',
+    $sql_mode = '',
     ) {
 
     $server_id = inline_template(
