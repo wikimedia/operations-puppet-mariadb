@@ -2,12 +2,13 @@
 # Keep this independent and modular. It should be includable without the mariadb class.
 
 class mariadb::config(
-    $config   = 'mariadb/default.my.cnf.erb',
-    $prompt   = '',
-    $password = 'undefined',
-    $datadir  = '/srv/sqldata',
-    $tmpdir   = '/srv/tmp',
-    $sql_mode = '',
+    $config    = 'mariadb/default.my.cnf.erb',
+    $prompt    = '',
+    $password  = 'undefined',
+    $datadir   = '/srv/sqldata',
+    $tmpdir    = '/srv/tmp',
+    $sql_mode  = '',
+    $read_only = 'off',
     ) {
 
     $server_id = inline_template(
