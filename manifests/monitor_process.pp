@@ -7,7 +7,7 @@ class mariadb::monitor_process(
     ) {
     nrpe::monitor_service { "${process_name}":
         description   => "${process_name} processes",
-        nrpe_command  => "/usr/lib/nagios/plugins/check_procs -c ${process_count}:{$process_count} -C ${process_name}",
+        nrpe_command  => "/usr/lib/nagios/plugins/check_procs -c ${process_count}:${process_count} -C ${process_name}",
         critical      => $is_critical,
         contact_group => $contact_group,
     }
