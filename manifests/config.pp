@@ -26,7 +26,7 @@ class mariadb::config(
         owner   => 'root',
         group   => 'root',
         mode    => '0400',
-        content => template("mariadb/root.my.cnf.erb"),
+        content => template('mariadb/root.my.cnf.erb'),
     }
 
     file { '/etc/mysql/my.cnf':
@@ -49,14 +49,14 @@ class mariadb::config(
         managehome => false,
     }
 
-    file { "$datadir":
+    file { $datadir:
         ensure  => directory,
         owner   => 'mysql',
         group   => 'mysql',
         mode    => '0755',
     }
 
-    file { "$tmpdir":
+    file { $tmpdir:
         ensure  => directory,
         owner   => 'mysql',
         group   => 'mysql',

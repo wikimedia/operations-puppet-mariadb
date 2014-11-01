@@ -5,7 +5,7 @@ class mariadb::monitor_process(
     $process_name   = 'mysqld',
     $process_count  = 1,
     ) {
-    nrpe::monitor_service { "${process_name}":
+    nrpe::monitor_service { $process_name:
         description   => "${process_name} processes",
         nrpe_command  => "/usr/lib/nagios/plugins/check_procs -c ${process_count}:${process_count} -C ${process_name}",
         critical      => $is_critical,
