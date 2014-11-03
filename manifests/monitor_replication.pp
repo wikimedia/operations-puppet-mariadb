@@ -13,17 +13,19 @@ define mariadb::monitor_replication(
     include passwords::nagios::mysql
     $password = $passwords::nagios::mysql::mysql_check_pass
 
-    $check_mariadb = "/usr/lib/nagios/plugins/check_mariadb.pl --sock=${socket} --user=nagios --pass=${password}"
+    $check_command = "/usr/lib/nagios/plugins/check_mariadb.pl --sock=${socket} --user=nagios --pass=${password}"
 
-    $check_mariadb = $multisource ? {
-        true  => "${check_mariadb} --set=default_master_connection=${name}",
-        false => "${check_mariadb}"
+    $check_set = $multisource ? {
+        true  => "--set=default_master_connection=${name}",
+        false => ""
     }
 
-    $check_mariadb = $warn_stopped ? {
-        true  => "${check_mariadb} --warn-stopped",
-        false => "${check_mariadb} --no-warn-stopped"
+    $check_warn = $warn_stopped ? {
+        true  => "--warn-stopped",
+        false => "--no-warn-stopped"
     }
+
+    $check_mariadb = "${check_command} ${check_set} ${check_warn}"
 
     nrpe::monitor_service { "mariadb_slave_io_state_${name}":
         description   => "MariaDB Slave IO: ${name}",
