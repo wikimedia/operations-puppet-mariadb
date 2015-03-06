@@ -29,9 +29,17 @@ class mariadb::config(
         content => template('mariadb/root.my.cnf.erb'),
     }
 
+    file { '/etc/mysql':
+        ensure => directory,
+        mode   => '0755',
+        owner  => 'root',
+        group  => 'root',
+    }
+
     file { '/etc/mysql/my.cnf':
         ensure => link,
         target => '/etc/my.cnf',
+        require => File['/etc/mysql'],
     }
 
     # Include these manually. If we're testing on systems with tarballs
