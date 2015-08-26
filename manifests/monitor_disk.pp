@@ -1,4 +1,3 @@
-
 class mariadb::monitor_disk(
     $is_critical   = true,
     $contact_group = 'dba',
