@@ -1,3 +1,5 @@
+# TODO: Revisit the is_critical part. We probably want pages for DB problems for
+# at least a group of people
 class mariadb::monitor_disk(
     $is_critical   = true,
     $contact_group = 'dba',

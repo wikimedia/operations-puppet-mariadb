@@ -1,5 +1,6 @@
 # MariaDB 10 multi-source replication
-
+# TODO: Revisit the is_critical part. We probably want pages for DB problems for
+# at least a group of people
 define mariadb::monitor_replication(
     $is_critical   = true,
     $contact_group = 'dba',
@@ -30,21 +31,21 @@ define mariadb::monitor_replication(
     nrpe::monitor_service { "mariadb_slave_io_state_${name}":
         description   => "MariaDB Slave IO: ${name}",
         nrpe_command  => "${check_mariadb} --check=slave_io_state",
-        critical      => true,
+        critical      => $is_critical,
         contact_group => $contact_group,
     }
 
     nrpe::monitor_service { "mariadb_slave_sql_state_${name}":
         description   => "MariaDB Slave SQL: ${name}",
         nrpe_command  => "${check_mariadb} --check=slave_sql_state",
-        critical      => true,
+        critical      => $is_critical,
         contact_group => $contact_group,
     }
 
     nrpe::monitor_service { "mariadb_slave_sql_lag_${name}":
         description   => "MariaDB Slave Lag: ${name}",
         nrpe_command  => "${check_mariadb} --check=slave_sql_lag --sql-lag-warn=${lag_warn} --sql-lag-crit=${lag_crit}",
-        critical      => true,
+        critical      => $is_critical,
         contact_group => $contact_group,
     }
 }
