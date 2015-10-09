@@ -9,6 +9,7 @@ class mariadb::config(
     $tmpdir    = '/srv/tmp',
     $sql_mode  = '',
     $read_only = 'off',
+    $p_s       = 'off',
     ) {
 
     $server_id = inline_template(
