@@ -2,7 +2,7 @@
 # Unless you're setting up a production server, you probably want vanilla mariadb::packages
 
 class mariadb::packages_wmf(
-    $mariadb10 = true,
+    $mariadb10 = false,
     ) {
 
     package { [
