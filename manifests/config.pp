@@ -10,6 +10,7 @@ class mariadb::config(
     $sql_mode  = '',
     $read_only = 'off',
     $p_s       = 'off',
+    $ssl       = 'off',
     ) {
 
     $server_id = inline_template(
