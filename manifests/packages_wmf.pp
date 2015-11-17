@@ -2,13 +2,14 @@
 # Unless you're setting up a production server, you probably want vanilla mariadb::packages
 
 class mariadb::packages_wmf(
-    $mariadb10 = false,
+    $mariadb10 = true,
     ) {
 
     package { [
         'libaio1',
         'percona-toolkit',
         'percona-xtrabackup',
+        'libjemalloc1',
     ]:
         ensure => present,
     }
