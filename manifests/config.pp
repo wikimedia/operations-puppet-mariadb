@@ -91,20 +91,55 @@ class mariadb::config(
             mode    => '0750',
             require => File['/etc/mysql']
         }
-        ssl_key { 'cacert':
-            filename => 'cacert.pem',
+        file { '/etc/mysql/ssl/cacert.pem':
+            ensure    => file,
+            owner     => 'root',
+            group     => 'mysql',
+            mode      => '0440',
+            show_diff => false,
+            backup    => false,
+            content   => secret("mysql/cacert.pem"),
+            require   => File['/etc/mysql/ssl'],
         }
-        ssl_key { 'server-key':
-            filename => 'server-key.pem',
+        file { '/etc/mysql/ssl/server-key.pem':
+            ensure    => file,
+            owner     => 'root',
+            group     => 'mysql',
+            mode      => '0440',
+            show_diff => false,
+            backup    => false,
+            content   => secret("mysql/server-key.pem"),
+            require   => File['/etc/mysql/ssl'],
         }
-        ssl_key { 'server-cert':
-            filename => 'server-cert.pem',
+        file { '/etc/mysql/ssl/server-cert.pem':
+            ensure    => file,
+            owner     => 'root',
+            group     => 'mysql',
+            mode      => '0440',
+            show_diff => false,
+            backup    => false,
+            content   => secret("mysql/server-cert.pem"),
+            require   => File['/etc/mysql/ssl'],
         }
-        ssl_key { 'client-key':
-            filename => 'client-key.pem',
+        file { '/etc/mysql/ssl/client-key.pem':
+            ensure    => file,
+            owner     => 'root',
+            group     => 'mysql',
+            mode      => '0440',
+            show_diff => false,
+            backup    => false,
+            content   => secret("mysql/client-key.pem"),
+            require   => File['/etc/mysql/ssl'],
         }
-        ssl_key { 'client-cert':
-            filename => 'client-cert.pem',
+        file { '/etc/mysql/ssl/client-cert.pem':
+            ensure    => file,
+            owner     => 'root',
+            group     => 'mysql',
+            mode      => '0440',
+            show_diff => false,
+            backup    => false,
+            content   => secret("mysql/client-cert.pem"),
+            require   => File['/etc/mysql/ssl'],
         }
     }
 }
