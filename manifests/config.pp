@@ -83,7 +83,6 @@ class mariadb::config(
     }
 
     if ($ssl == 'on') {
-        include mariadb::ssl_key
 
         file { '/etc/mysql/ssl':
             ensure  => directory,
@@ -92,19 +91,19 @@ class mariadb::config(
             mode    => '0750',
             require => File['/etc/mysql']
         }
-        ssl_key { 'cacert':
+        mariadb::ssl_key { 'cacert':
             file => 'cacert.pem',
         }
-        ssl_key { 'server-key':
+        mariadb::ssl_key { 'server-key':
             file => 'server-key.pem',
         }
-        ssl_key { 'server-cert':
+        mariadb::ssl_key { 'server-cert':
             file => 'server-cert.pem',
         }
-        ssl_key { 'client-key':
+        mariadb::ssl_key { 'client-key':
             file => 'client-key.pem',
         }
-        ssl_key { 'client-cert':
+        mariadb::ssl_key { 'client-cert':
             file => 'client-cert.pem',
         }
     }
