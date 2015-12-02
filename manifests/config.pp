@@ -99,7 +99,7 @@ class mariadb::config(
             mode      => '0440',
             show_diff => false,
             backup    => false,
-            content   => secret("mysql/cacert.pem"),
+            content   => secret('mysql/cacert.pem'),
             require   => File['/etc/mysql/ssl'],
         }
         file { '/etc/mysql/ssl/server-key.pem':
@@ -109,7 +109,7 @@ class mariadb::config(
             mode      => '0440',
             show_diff => false,
             backup    => false,
-            content   => secret("mysql/server-key.pem"),
+            content   => secret('mysql/server-key.pem'),
             require   => File['/etc/mysql/ssl'],
         }
         file { '/etc/mysql/ssl/server-cert.pem':
@@ -119,7 +119,7 @@ class mariadb::config(
             mode      => '0440',
             show_diff => false,
             backup    => false,
-            content   => secret("mysql/server-cert.pem"),
+            content   => secret('mysql/server-cert.pem'),
             require   => File['/etc/mysql/ssl'],
         }
         file { '/etc/mysql/ssl/client-key.pem':
@@ -129,7 +129,7 @@ class mariadb::config(
             mode      => '0440',
             show_diff => false,
             backup    => false,
-            content   => secret("mysql/client-key.pem"),
+            content   => secret('mysql/client-key.pem'),
             require   => File['/etc/mysql/ssl'],
         }
         file { '/etc/mysql/ssl/client-cert.pem':
@@ -139,7 +139,7 @@ class mariadb::config(
             mode      => '0440',
             show_diff => false,
             backup    => false,
-            content   => secret("mysql/client-cert.pem"),
+            content   => secret('mysql/client-cert.pem'),
             require   => File['/etc/mysql/ssl'],
         }
     }

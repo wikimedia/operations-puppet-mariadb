@@ -18,12 +18,12 @@ define mariadb::monitor_replication(
 
     $check_set = $multisource ? {
         true  => "--set=default_master_connection=${name}",
-        false => ""
+        false => ''
     }
 
     $check_warn = $warn_stopped ? {
-        true  => "--warn-stopped",
-        false => "--no-warn-stopped"
+        true  => '--warn-stopped',
+        false => '--no-warn-stopped'
     }
 
     $check_mariadb = "${check_command} ${check_set} ${check_warn}"
