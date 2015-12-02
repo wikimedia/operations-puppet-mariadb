@@ -92,19 +92,19 @@ class mariadb::config(
             require => File['/etc/mysql']
         }
         mariadb::ssl_key { 'cacert':
-            file => 'cacert.pem',
+            filename => 'cacert.pem',
         }
         mariadb::ssl_key { 'server-key':
-            file => 'server-key.pem',
+            filename => 'server-key.pem',
         }
         mariadb::ssl_key { 'server-cert':
-            file => 'server-cert.pem',
+            filename => 'server-cert.pem',
         }
         mariadb::ssl_key { 'client-key':
-            file => 'client-key.pem',
+            filename => 'client-key.pem',
         }
         mariadb::ssl_key { 'client-cert':
-            file => 'client-cert.pem',
+            filename => 'client-cert.pem',
         }
     }
 }
