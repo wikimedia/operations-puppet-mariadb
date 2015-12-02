@@ -1,5 +1,6 @@
 # Please use separate .cnf templates for each type of server.
-# Keep this independent and modular. It should be includable without the mariadb class.
+# Keep this independent and modular. It should be includable 
+# without the mariadb class.
 
 class mariadb::config(
     $config    = 'mariadb/default.my.cnf.erb',
@@ -14,7 +15,8 @@ class mariadb::config(
     ) {
 
     $server_id = inline_template(
-        "<%= @ipaddress.split('.').inject(0) {|total,value| (total << 8 ) + value.to_i} %>"
+        "<%= @ipaddress.split('.').inject(0)\
+{|total,value| (total << 8 ) + value.to_i} %>"
     )
 
     file { '/etc/my.cnf':
@@ -39,8 +41,8 @@ class mariadb::config(
     }
 
     file { '/etc/mysql/my.cnf':
-        ensure => link,
-        target => '/etc/my.cnf',
+        ensure  => link,
+        target  => '/etc/my.cnf',
         require => File['/etc/mysql'],
     }
 
@@ -78,5 +80,32 @@ class mariadb::config(
         group  => 'root',
         mode   => '0755',
         source => 'puppet:///files/icinga/check_mariadb.pl',
+    }
+
+    if ($ssl == 'on') {
+        include mariadb::ssl_key
+
+        file { '/etc/mysql/ssl':
+            ensure  => directory,
+            owner   => 'root',
+            group   => 'mysql',
+            mode    => '0750',
+            require => File['/etc/mysql']
+        }
+        ssl_key { 'cacert':
+            file => 'cacert.pem',
+        }
+        ssl_key { 'server-key':
+            file => 'server-key.pem',
+        }
+        ssl_key { 'server-cert':
+            file => 'server-cert.pem',
+        }
+        ssl_key { 'client-key':
+            file => 'client-key.pem',
+        }
+        ssl_key { 'client-cert':
+            file => 'client-cert.pem',
+        }
     }
 }
