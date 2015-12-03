@@ -3,15 +3,16 @@
 # without the mariadb class.
 
 class mariadb::config(
-    $config    = 'mariadb/default.my.cnf.erb',
-    $prompt    = '',
-    $password  = 'undefined',
-    $datadir   = '/srv/sqldata',
-    $tmpdir    = '/srv/tmp',
-    $sql_mode  = '',
-    $read_only = 'off',
-    $p_s       = 'off',
-    $ssl       = 'off',
+    $config        = 'mariadb/default.my.cnf.erb',
+    $prompt        = '',
+    $password      = 'undefined',
+    $datadir       = '/srv/sqldata',
+    $tmpdir        = '/srv/tmp',
+    $sql_mode      = '',
+    $read_only     = 'off',
+    $p_s           = 'off',
+    $ssl           = 'off',
+    $binlog_format = 'MIXED',
     ) {
 
     $server_id = inline_template(
