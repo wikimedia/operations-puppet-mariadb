@@ -10,6 +10,7 @@ class mariadb::packages_wmf(
         'percona-toolkit',
         'percona-xtrabackup',
         'libjemalloc1',
+        'pigz',
     ]:
         ensure => present,
     }
