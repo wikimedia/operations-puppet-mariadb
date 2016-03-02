@@ -17,16 +17,17 @@
 
 do_start() {
     start-stop-daemon --start --quiet --pidfile /var/run/pt-heartbeat.pid \
-        --name pt-heartbeat --user root --pidfile /var/run/pt-heartbeat.pid \
-        --startas /usr/local/bin/pt-heartbeat-wikimedia -- -D heartbeat \
+        --user root --startas /usr/bin/perl -- \
+        /usr/local/bin/pt-heartbeat-wikimedia -D heartbeat \
         --shard=$1 --update --replace --interval=0.5 -S /tmp/mysql.sock \
-        --daemonize || return 2
+        --daemonize --pid /var/run/pt-heartbeat.pid || return 2
 }
 
 do_stop() {
     start-stop-daemon --stop --quiet --retry 5 \
         --pidfile /var/run/pt-heartbeat.pid --user root \
-        --startas /usr/local/bin/pt-heartbeat-wikimedia || return 1
+        --startas /usr/bin/perl -- /usr/local/bin/pt-heartbeat-wikimedia \
+        || return 1
 }
 
 case "$1" in
@@ -38,7 +39,7 @@ stop)    log_daemon_msg "Stopping pt-heartbeat" "pt-heartbeat"
     do_stop $2
     log_end_msg $?
     ;;
-restart) log_daemon_msg "Restarting pt-heartbeat" "upd2log"
+restart) log_daemon_msg "Restarting pt-heartbeat" "pt-heartbeat"
     do_stop $2
     do_start $2
     log_end_msg $?
