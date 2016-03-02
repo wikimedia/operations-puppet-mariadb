@@ -21,7 +21,8 @@ class mariadb::heartbeat (
 
     exec { 'pt-heartbeat':
         command => "/usr/bin/perl \
-                    /usr/local/bin/pt-heartbeat-wikimedia -D heartbeat \
+                    /usr/local/bin/pt-heartbeat-wikimedia \
+                    --defaults-file=/root/.my.cnf -D heartbeat \
                     --shard=${shard} --update --replace --interval=0.5 \
                     -S /tmp/mysql.sock --daemonize \
                     --pid /var/run/pt-heartbeat.pid",
