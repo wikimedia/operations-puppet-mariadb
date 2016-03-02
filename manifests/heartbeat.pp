@@ -19,15 +19,15 @@ class mariadb::heartbeat (
         source => 'puppet:///modules/mariadb/pt-heartbeat-wikimedia',
     }
 
-    service { 'pt-heartbeat':
-        ensure    => running,
-        start     => "/etc/init.d/pt-heartbeat start ${shard}",
-        require   => [  File['/etc/init.d/pt-heartbeat'],
-                        File['/usr/local/bin/pt-heartbeat-wikimedia'],
-                        ],
-        subscribe => [  File['/etc/init.d/pt-heartbeat'],
-                        File['/usr/local/bin/pt-heartbeat-wikimedia'],
-                        ],
-        hasstatus => false,
+    exec { 'pt-heartbeat':
+        command => "/usr/bin/perl \
+                    /usr/local/bin/pt-heartbeat-wikimedia -D heartbeat \
+                    --shard=${shard} --update --replace --interval=0.5 \
+                    -S /tmp/mysql.sock --daemonize \
+                    --pid /var/run/pt-heartbeat.pid",
+        unless  => '/bin/ps --pid $(cat /var/run/pt-heartbeat.pid) \
+                    > /dev/null 2>&1',
+        user    => 'root',
+        require => File['/usr/local/bin/pt-heartbeat-wikimedia'],
     }
 }
