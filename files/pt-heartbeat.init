@@ -17,14 +17,15 @@
 
 do_start() {
     start-stop-daemon --start --quiet --pidfile /var/run/pt-heartbeat.pid \
-        --name pt-heartbeat --startas /usr/local/bin/pt-heartbeat-wikimedia \
-        -- -D heartbeat --shard=$1 --update --replace --interval=0.5 --daemon \
-        --pid /var/run/pt-heartbeat.pid -S /tmp/mysql.sock || return 2
+        --name pt-heartbeat --user root --pidfile /var/run/pt-heartbeat.pid \
+        --startas /usr/local/bin/pt-heartbeat-wikimedia -- -D heartbeat \
+        --shard=m5 --update --replace --interval=0.5 -S /tmp/mysql.sock \
+        --daemonize || return 2
 }
 
 do_stop() {
     start-stop-daemon --stop --quiet --retry 5 \
-        --pidfile /var/run/pt-heartbeat.pid \
+        --pidfile /var/run/pt-heartbeat.pid --user root \
         --startas /usr/local/bin/pt-heartbeat-wikimedia || return 1
 }
 
