@@ -44,7 +44,9 @@ define mariadb::monitor_replication(
 
     nrpe::monitor_service { "mariadb_slave_sql_lag_${name}":
         description   => "MariaDB Slave Lag: ${name}",
-        nrpe_command  => "${check_mariadb} --check=slave_sql_lag --sql-lag-warn=${lag_warn} --sql-lag-crit=${lag_crit}",
+        nrpe_command  => "${check_mariadb} --check=slave_sql_lag --shard=${name} \
+                          --sql-lag-warn=${lag_warn} \
+                          --sql-lag-crit=${lag_crit}",
         critical      => $is_critical,
         contact_group => $contact_group,
     }
