@@ -1,5 +1,5 @@
 # Please use separate .cnf templates for each type of server.
-# Keep this independent and modular. It should be includable 
+# Keep this independent and modular. It should be includable
 # without the mariadb class.
 
 class mariadb::config(
@@ -142,5 +142,38 @@ class mariadb::config(
             content   => secret('mysql/client-cert.pem'),
             require   => File['/etc/mysql/ssl'],
         }
+
+        ::base::expose_puppet_certs { '/etc/mysql':
+            ensure          => present,
+            provide_private => true,
+            user            => 'mysql',
+            group           => 'mysql',
+        }
+
+        # Temporary CA certificate with multiple PEM for backward compatibility
+        concat { '/etc/mysql/ssl/ca.crt':
+            ensure  => present,
+            owner   => 'mysql',
+            group   => 'mysql',
+            mode    => '0444',
+            warn    => true,
+            require => [
+                File['/etc/ssl/certs/Puppet_Internal_CA.pem'],
+                File['/etc/mysql/ssl/cacert.pem'],
+            ],
+        }
+
+        concat::fragment { 'mysql_ca':
+            target  => '/etc/mysql/ssl/ca.crt',
+            content => file('/etc/mysql/ssl/cacert.pem'),
+            order   => '01',
+        }
+
+        concat::fragment { 'puppet_ca':
+            target  => '/etc/mysql/ssl/ca.crt',
+            content => file('/etc/ssl/certs/Puppet_Internal_CA.pem'),
+            order   => '02',
+        }
+
     }
 }
