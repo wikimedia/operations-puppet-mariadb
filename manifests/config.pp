@@ -83,7 +83,7 @@ class mariadb::config(
         source => 'puppet:///files/icinga/check_mariadb.pl',
     }
 
-    if ($ssl == 'on') {
+    if ($ssl == 'on' or $ssl == 'multiple-ca') {
 
         file { '/etc/mysql/ssl':
             ensure  => directory,
@@ -149,30 +149,26 @@ class mariadb::config(
             user            => 'mysql',
             group           => 'mysql',
         }
+    }
 
+    if ($ssl == 'multiple-ca') {
         # Temporary CA certificate with multiple PEM for backward compatibility
-        concat { '/etc/mysql/ssl/ca.crt':
-            ensure  => present,
-            owner   => 'mysql',
-            group   => 'mysql',
-            mode    => '0444',
-            warn    => true,
+        # Rewritten with exec because of the missing concat module
+        exec { 'multiple-ca':
+            command => '/bin/cat /etc/ssl/certs/Puppet_Internal_CA.pem /etc/mysql/ssl/cacert.pem > /etc/mysql/ssl/ca.crt',
+            creates => '/etc/mysql/ssl/ca.crt',
             require => [
                 File['/etc/ssl/certs/Puppet_Internal_CA.pem'],
                 File['/etc/mysql/ssl/cacert.pem'],
             ],
         }
 
-        concat::fragment { 'mysql_ca':
-            target  => '/etc/mysql/ssl/ca.crt',
-            content => file('/etc/mysql/ssl/cacert.pem'),
-            order   => '01',
-        }
-
-        concat::fragment { 'puppet_ca':
-            target  => '/etc/mysql/ssl/ca.crt',
-            content => file('/etc/ssl/certs/Puppet_Internal_CA.pem'),
-            order   => '02',
+        file { '/etc/mysql/ssl/ca.crt':
+            ensure  => present,
+            owner   => 'mysql',
+            group   => 'mysql',
+            mode    => '0444',
+            require => Exec['multiple-ca'],
         }
 
     }
