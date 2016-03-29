@@ -85,13 +85,14 @@ class mariadb::config(
 
     if ($ssl == 'on' or $ssl == 'multiple-ca') {
 
-        file { '/etc/mysql/ssl':
-            ensure  => directory,
-            owner   => 'root',
-            group   => 'mysql',
-            mode    => '0750',
-            require => File['/etc/mysql']
+        # This creates also /etc/mysql/ssl
+        ::base::expose_puppet_certs { '/etc/mysql':
+            ensure          => present,
+            provide_private => true,
+            user            => 'mysql',
+            group           => 'mysql',
         }
+
         file { '/etc/mysql/ssl/cacert.pem':
             ensure    => file,
             owner     => 'root',
@@ -100,7 +101,6 @@ class mariadb::config(
             show_diff => false,
             backup    => false,
             content   => secret('mysql/cacert.pem'),
-            require   => File['/etc/mysql/ssl'],
         }
         file { '/etc/mysql/ssl/server-key.pem':
             ensure    => file,
@@ -110,7 +110,6 @@ class mariadb::config(
             show_diff => false,
             backup    => false,
             content   => secret('mysql/server-key.pem'),
-            require   => File['/etc/mysql/ssl'],
         }
         file { '/etc/mysql/ssl/server-cert.pem':
             ensure    => file,
@@ -120,7 +119,6 @@ class mariadb::config(
             show_diff => false,
             backup    => false,
             content   => secret('mysql/server-cert.pem'),
-            require   => File['/etc/mysql/ssl'],
         }
         file { '/etc/mysql/ssl/client-key.pem':
             ensure    => file,
@@ -130,7 +128,6 @@ class mariadb::config(
             show_diff => false,
             backup    => false,
             content   => secret('mysql/client-key.pem'),
-            require   => File['/etc/mysql/ssl'],
         }
         file { '/etc/mysql/ssl/client-cert.pem':
             ensure    => file,
@@ -140,15 +137,8 @@ class mariadb::config(
             show_diff => false,
             backup    => false,
             content   => secret('mysql/client-cert.pem'),
-            require   => File['/etc/mysql/ssl'],
         }
 
-        ::base::expose_puppet_certs { '/etc/mysql':
-            ensure          => present,
-            provide_private => true,
-            user            => 'mysql',
-            group           => 'mysql',
-        }
     }
 
     if ($ssl == 'multiple-ca') {
