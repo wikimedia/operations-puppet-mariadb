@@ -83,7 +83,7 @@ class mariadb::config(
         source => 'puppet:///files/icinga/check_mariadb.pl',
     }
 
-    if ($ssl == 'on' or $ssl == 'multiple-ca') {
+    if ($ssl == 'on' or $ssl == 'multiple-ca' or $ssl == 'puppet-cert') {
 
         # This creates also /etc/mysql/ssl
         ::base::expose_puppet_certs { '/etc/mysql':
@@ -91,6 +91,7 @@ class mariadb::config(
             provide_private => true,
             user            => 'mysql',
             group           => 'mysql',
+            require         => File['/etc/ssl/certs/Puppet_Internal_CA.pem'],
         }
 
         file { '/etc/mysql/ssl/cacert.pem':
