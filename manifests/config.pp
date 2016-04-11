@@ -91,7 +91,6 @@ class mariadb::config(
             provide_private => true,
             user            => 'mysql',
             group           => 'mysql',
-            require         => File['/etc/ssl/certs/Puppet_Internal_CA.pem'],
         }
 
         file { '/etc/mysql/ssl/cacert.pem':
