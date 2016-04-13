@@ -147,10 +147,7 @@ class mariadb::config(
         exec { 'multiple-ca':
             command => '/bin/cat /etc/ssl/certs/Puppet_Internal_CA.pem /etc/mysql/ssl/cacert.pem > /etc/mysql/ssl/ca.crt',
             creates => '/etc/mysql/ssl/ca.crt',
-            require => [
-                File['/etc/ssl/certs/Puppet_Internal_CA.pem'],
-                File['/etc/mysql/ssl/cacert.pem'],
-            ],
+            require => File['/etc/mysql/ssl/cacert.pem'],
         }
 
         file { '/etc/mysql/ssl/ca.crt':
