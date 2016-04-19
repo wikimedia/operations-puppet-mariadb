@@ -30,7 +30,7 @@ class mariadb::heartbeat (
         }
     } else {
         exec { 'pt-heartbeat-kill':
-            command => 'kill -TERM $(cat /var/run/pt-heartbeat.pid)',
+            command => '/bin/kill -TERM $(cat /var/run/pt-heartbeat.pid)',
             onlyif  => '/bin/ps --pid $(cat /var/run/pt-heartbeat.pid) \
             > /dev/null 2>&1',
             user    => 'root',
