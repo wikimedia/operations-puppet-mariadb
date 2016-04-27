@@ -2,6 +2,9 @@
 # Keep this independent and modular. It should be includable
 # without the mariadb class.
 
+# Accepted values for the $semi_sync parameter are:
+# 'off' | 'slave' | 'master' | 'both'
+
 class mariadb::config(
     $config        = 'mariadb/default.my.cnf.erb',
     $prompt        = '',
@@ -13,6 +16,7 @@ class mariadb::config(
     $p_s           = 'off',
     $ssl           = 'off',
     $binlog_format = 'MIXED',
+    $semi_sync     = 'off',
     ) {
 
     $server_id = inline_template(
