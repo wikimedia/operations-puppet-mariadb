@@ -50,8 +50,7 @@ class mariadb::config(
     }
 
     file { '/etc/mysql/my.cnf':
-        ensure  => link,
-        target  => '/etc/my.cnf',
+        ensure  => absent,
         require => File['/etc/mysql'],
     }
 
