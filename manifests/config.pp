@@ -5,18 +5,22 @@
 # Accepted values for the $semi_sync parameter are:
 # 'off' | 'slave' | 'master' | 'both'
 
+# Accepted values for the $replication_role parameter are:
+# 'standalone' | 'slave' | 'master' | 'multisource_slave'
+
 class mariadb::config(
-    $config        = 'mariadb/default.my.cnf.erb',
-    $prompt        = '',
-    $password      = 'undefined',
-    $datadir       = '/srv/sqldata',
-    $tmpdir        = '/srv/tmp',
-    $sql_mode      = '',
-    $read_only     = 'off',
-    $p_s           = 'off',
-    $ssl           = 'off',
-    $binlog_format = 'MIXED',
-    $semi_sync     = 'off',
+    $config           = 'mariadb/default.my.cnf.erb',
+    $prompt           = '',
+    $password         = 'undefined',
+    $datadir          = '/srv/sqldata',
+    $tmpdir           = '/srv/tmp',
+    $sql_mode         = '',
+    $read_only        = 'off',
+    $p_s              = 'off',
+    $ssl              = 'off',
+    $binlog_format    = 'MIXED',
+    $semi_sync        = 'off',
+    $replication_role = 'standalone',
     ) {
 
     $server_id = inline_template(
