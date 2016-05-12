@@ -90,7 +90,7 @@ class mariadb::config(
         source => 'puppet:///files/icinga/check_mariadb.pl',
     }
 
-    if ($ssl == 'on' or $ssl == 'multiple-ca' or $ssl == 'puppet-cert') {
+    if ($ssl == 'on' or $ssl == 'puppet-cert') {
 
         # This creates also /etc/mysql/ssl
         ::base::expose_puppet_certs { '/etc/mysql':
@@ -144,25 +144,6 @@ class mariadb::config(
             show_diff => false,
             backup    => false,
             content   => secret('mysql/client-cert.pem'),
-        }
-
-    }
-
-    if ($ssl == 'multiple-ca') {
-        # Temporary CA certificate with multiple PEM for backward compatibility
-        # Rewritten with exec because of the missing concat module
-        exec { 'multiple-ca':
-            command => '/bin/cat /etc/ssl/certs/Puppet_Internal_CA.pem /etc/mysql/ssl/cacert.pem > /etc/mysql/ssl/ca.crt',
-            creates => '/etc/mysql/ssl/ca.crt',
-            require => File['/etc/mysql/ssl/cacert.pem'],
-        }
-
-        file { '/etc/mysql/ssl/ca.crt':
-            ensure  => present,
-            owner   => 'mysql',
-            group   => 'mysql',
-            mode    => '0444',
-            require => Exec['multiple-ca'],
         }
 
     }
