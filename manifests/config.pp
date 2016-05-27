@@ -15,7 +15,7 @@ class mariadb::config(
     $datadir          = '/srv/sqldata',
     $tmpdir           = '/srv/tmp',
     $sql_mode         = '',
-    $read_only        = 'off',
+    $read_only        = 0,
     $p_s              = 'off',
     $ssl              = 'off',
     $binlog_format    = 'MIXED',
