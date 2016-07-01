@@ -83,14 +83,12 @@ class mariadb::config(
         mode   => '0755',
     }
 
-    # lint:ignore:puppet_url_without_modules
     file { '/usr/lib/nagios/plugins/check_mariadb.pl':
         owner  => 'root',
         group  => 'root',
         mode   => '0755',
-        source => 'puppet:///files/icinga/check_mariadb.pl',
+        source => 'puppet:///modules/icinga/check_mariadb.pl',
     }
-    # lint:endignore
 
     if ($ssl == 'on' or $ssl == 'puppet-cert') {
 
