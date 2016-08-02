@@ -38,7 +38,7 @@ BEGIN {
 {
 package Percona::Toolkit;
 
-our $VERSION = '2.2.7';
+our $VERSION = '2.2.9';
 
 use strict;
 use warnings FATAL => 'all';
@@ -1675,7 +1675,7 @@ sub prompt_noecho {
    shift @_ if ref $_[0] eq __PACKAGE__;
    my ( $prompt ) = @_;
    local $OUTPUT_AUTOFLUSH = 1;
-   print $prompt
+   print STDERR $prompt
       or die "Cannot print: $OS_ERROR";
    my $response;
    eval {
@@ -2893,11 +2893,11 @@ sub find_possible_keys {
 
 sub check_table {
    my ( $self, %args ) = @_;
-   my @required_args = qw(dbh db tbl shard);
+   my @required_args = qw(dbh db tbl shard datacenter);
    foreach my $arg ( @required_args ) {
       die "I need a $arg argument" unless $args{$arg};
    }
-   my ($dbh, $db, $tbl, $shard) = @args{@required_args};
+   my ($dbh, $db, $tbl, $shard, $datacenter) = @args{@required_args};
    my $q      = $self->{Quoter} || 'Quoter';
    my $db_tbl = $q->quote($db, $tbl);
    PTDEBUG && _d('Checking', $db_tbl);
@@ -4840,13 +4840,14 @@ sub main {
    my $q  = new Quoter();
    my $tp = new TableParser(Quoter => $q);
 
-   my $interval = $o->get('interval');
-   my $skew     = $o->get('update') ? 0 : $o->get('skew');
-   my $sentinel = $o->get('sentinel');
-   my $frames   = $o->get('frames');
-   my $db       = $o->get('database');
-   my $tbl      = $o->get('table');
-   my $shard    = $o->get('shard');
+   my $interval   = $o->get('interval');
+   my $skew       = $o->get('update') ? 0 : $o->get('skew');
+   my $sentinel   = $o->get('sentinel');
+   my $frames     = $o->get('frames');
+   my $db         = $o->get('database');
+   my $tbl        = $o->get('table');
+   my $shard      = $o->get('shard');
+   my $datacenter = $o->get('datacenter');
 
    # ########################################################################
    # Create --sentinel file if --stop was given, and possibly exit.
@@ -4924,6 +4925,9 @@ sub main {
 
    die "Heartbeat table $db_tbl does not have a shard column"
       unless $tbl_struct->{is_col}->{shard};
+
+   die "Heartbeat table $db_tbl does not have a datacenter column"
+      unless $tbl_struct->{is_col}->{datacenter};
 
    die "Heartbeat table $db_tbl does not have a ts column"
       unless $tbl_struct->{is_col}->{ts};
@@ -5046,9 +5050,14 @@ sub main {
          qw(shard);
       PTDEBUG && _d("Shard columns:", join(', ', @shard_cols));
 
+      my @datacenter_cols  = grep { $tbl_struct->{is_col}->{$_} }
+         qw(datacenter);
+      PTDEBUG && _d("Datacenter columns:", join(', ', @datacenter_cols));
+
       # Just a shortcut so I don't have to check both arrays when creating
       # SQL statement below.
-      my @extra_cols = (@master_status_cols, @slave_status_cols, @shard_cols);
+      my @extra_cols = (@master_status_cols, @slave_status_cols, @shard_cols,
+                        @datacenter_cols);
 
       if ( $o->get('replace') ) {
          $heartbeat_sql
@@ -5104,6 +5113,10 @@ sub main {
 
          if ( @shard_cols ) {
             push @vals, map { $shard } @shard_cols;
+         }
+
+         if ( @datacenter_cols ) {
+            push @vals, map { $datacenter } @datacenter_cols;
          }
 
          my $retry = Retry->new();
@@ -5688,7 +5701,8 @@ be created with the following MAGIC_create_heartbeat table definition:
     position              bigint unsigned DEFAULT NULL, -- SHOW MASTER STATUS
     relay_master_log_file varchar(255) DEFAULT NULL,    -- SHOW SLAVE STATUS 
     exec_master_log_pos   bigint unsigned DEFAULT NULL, -- SHOW SLAVE STATUS
-    shard                 varchar(10)                   -- mediawiki extension
+    shard                 varchar(10) DEFAULT 'unknown' -- mediawiki extension
+    datacenter            char(5) DEFAULT NULL          -- mediawiki extension
   );
 
 The heartbeat table requires at least one row.  If you manually create the
@@ -5735,6 +5749,14 @@ Fork to the background and detach from the shell.  POSIX operating systems only.
 short form: -D; type: string
 
 The database to use for the connection.
+
+=item --datacenter
+
+type: string; default: NULL
+
+String (up to 5 characters) containing the dataceter that the servers belong to.
+E.g.: 'eqiad', 'codfw'.
+
 
 =item --dbi-driver
 
@@ -5949,7 +5971,8 @@ The tool prints a warning and continues if a variable cannot be set.
 
 type: string; default: unknown
 
-String containing the shard that the servers belong to.
+String (up to 10 characters) containing the shard that the servers belong to.
+E.g.: 's1', 'x1', 'tools'
 
 =item --skew
 
@@ -6211,6 +6234,6 @@ Place, Suite 330, Boston, MA  02111-1307  USA.
 
 =head1 VERSION
 
-pt-heartbeat 2.2.7
+pt-heartbeat 2.2.9
 
 =cut
