@@ -1,8 +1,9 @@
 # mariadb heartbeat capability
 class mariadb::heartbeat (
-    $enabled  = false,
-    $interval = 1,
-    $shard    = 'unknown',
+    $enabled    = false,
+    $interval   = 1,
+    $shard      = 'unknown',
+    $datacenter = 'none',
 ) {
 
 
@@ -21,7 +22,8 @@ class mariadb::heartbeat (
             command => "/usr/bin/perl \
             /usr/local/bin/pt-heartbeat-wikimedia \
             --defaults-file=/root/.my.cnf -D heartbeat \
-            --shard=${shard} --update --replace --interval=${interval} \
+            --shard=${shard} --datacenter=${datacenter} \
+            --update --replace --interval=${interval} \
             --set-vars=\"binlog_format=STATEMENT\" \
             -S /tmp/mysql.sock --daemonize \
             --pid /var/run/pt-heartbeat.pid",
