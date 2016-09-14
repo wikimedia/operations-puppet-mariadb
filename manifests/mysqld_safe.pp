@@ -2,7 +2,7 @@
 # changes to harden the wrapper without rebuilding the custom wmf-mariabd10 package
 # Once all trusty dbs are gone, we can hopefully discard mysqld_safe in favour of a custom
 # systemd service unit
-class role::mariadb::mysqld_safe {
+class mariadb::mysqld_safe {
 
     file { '/opt/wmf-mariadb10/bin/mysqld_safe':
         ensure => present,
