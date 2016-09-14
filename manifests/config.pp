@@ -53,6 +53,15 @@ class mariadb::config(
         ensure  => absent,
         require => File['/etc/mysql'],
     }
+    file { '/usr/local/etc/my.cnf':
+        ensure => absent,
+    }
+    file { "${datadir}/my.cnf":
+        ensure => absent,
+    }
+    file { '/opt/wmf-mariadb10/my.cnf':
+        ensure => absent,
+    }
 
     # Include these manually. If we're testing on systems with tarballs
     # instead of debs, the user won't exist.
