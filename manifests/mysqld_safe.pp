@@ -9,6 +9,6 @@ class mariadb::mysqld_safe {
         owner  => 'root',
         group  => 'mysql',
         mode   => '0755',
-        source => 'puppet:///files/mariadb/mysqld_safe',
+        source => 'puppet:///modules/mariadb/mysqld_safe',
     }
 }
