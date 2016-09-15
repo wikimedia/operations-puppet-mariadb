@@ -77,7 +77,6 @@ Usage: $0 [OPTIONS]
   --open-files-limit=LIMIT   Limit the number of open files
   --crash-script=FILE        Script to call when mysqld crashes
   --timezone=TZ              Set the system timezone
-  --malloc-lib=LIB           Preload shared library LIB if available
   --mysqld=FILE              Use the specified file as mysqld
   --mysqld-version=VERSION   Use "mysqld-VERSION" as mysqld
   --nice=NICE                Set the scheduling priority of mysqld
@@ -223,7 +222,6 @@ parse_arguments() {
       # mysqld_safe-specific options - must be set in my.cnf ([mysqld_safe])!
       --core[-_]file[-_]size=*) core_file_size="$val" ;;
       --ledir=*) ledir="$val" ;;
-      --malloc[-_]lib=*) set_malloc_lib "$val" ;;
       --mysqld=*) MYSQLD="$val" ;;
       --mysqld[-_]version=*)
         if test -n "$val"
@@ -326,59 +324,6 @@ get_mysql_config() {
   fi
 
   "$mysql_config" "$@"
-}
-
-
-# set_malloc_lib LIB
-# - If LIB is empty, do nothing and return
-# - If LIB is 'tcmalloc', look for tcmalloc shared library in /usr/lib
-#   then pkglibdir.  tcmalloc is part of the Google perftools project.
-# - If LIB is an absolute path, assume it is a malloc shared library
-#
-# Put LIB in mysqld_ld_preload, which will be added to LD_PRELOAD when
-# running mysqld.  See ld.so for details.
-set_malloc_lib() {
-  malloc_lib="$1"
-
-  if [ "$malloc_lib" = tcmalloc ]; then
-    pkglibdir=`get_mysql_config --variable=pkglibdir`
-    malloc_lib=
-    # This list is kept intentionally simple.  Simply set --malloc-lib
-    # to a full path if another location is desired.
-    for libdir in /usr/lib "$pkglibdir" "$pkglibdir/mysql"; do
-      for flavor in _minimal '' _and_profiler _debug; do
-        tmp="$libdir/libtcmalloc$flavor.so"
-        #log_notice "DEBUG: Checking for malloc lib '$tmp'"
-        [ -r "$tmp" ] || continue
-        malloc_lib="$tmp"
-        break 2
-      done
-    done
-
-    if [ -z "$malloc_lib" ]; then
-      log_error "no shared library for --malloc-lib=tcmalloc found in /usr/lib or $pkglibdir"
-      exit 1
-    fi
-  fi
-
-  # Allow --malloc-lib='' to override other settings
-  [ -z  "$malloc_lib" ] && return
-
-  case "$malloc_lib" in
-    /*)
-      if [ ! -r "$malloc_lib" ]; then
-        log_error "--malloc-lib '$malloc_lib' can not be read and will not be used"
-        exit 1
-      fi
-      ;;
-    *)
-      log_error "--malloc-lib must be an absolute path or 'tcmalloc'; " \
-        "ignoring value '$malloc_lib'"
-      exit 1
-      ;;
-  esac
-
-  add_mysqld_ld_preload "$malloc_lib"
 }
 
 
