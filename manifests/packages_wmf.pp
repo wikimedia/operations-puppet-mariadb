@@ -31,4 +31,9 @@ class mariadb::packages_wmf(
             ensure => present,
         }
     }
+
+    # if you have installed the wmf mariadb package,
+    # create a custom, safer mysqld_safe
+    # Required until a new package is created
+    include mariadb::mysqld_safe
 }
