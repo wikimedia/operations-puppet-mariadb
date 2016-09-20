@@ -35,12 +35,13 @@ class mariadb::config(
         content => template($config),
     }
 
-    file { '/root/.my.cnf':
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0400',
-        content => template('mariadb/root.my.cnf.erb'),
-    }
+# Temporarily disabled until T146146 is clarified
+#    file { '/root/.my.cnf':
+#        owner   => 'root',
+#        group   => 'root',
+#        mode    => '0400',
+#        content => template('mariadb/root.my.cnf.erb'),
+#    }
 
     file { '/etc/mysql':
         ensure => directory,
