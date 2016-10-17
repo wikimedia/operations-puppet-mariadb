@@ -13,7 +13,7 @@ class mariadb::service (
         owner   => 'root',
         group   => 'root',
         mode    => '0755',
-        content => template('mariadb.server.erb'),
+        content => template('mariadb/mariadb.server.erb'),
         require => Package["${package}"],
     }
 
