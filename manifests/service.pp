@@ -20,13 +20,13 @@ class mariadb::service (
     file { '/etc/init.d/mysql':
         ensure  => 'link',
         target  => "${basedir}/service",
-        require => "${basedir}/service",
+        require => File["${basedir}/service"],
     }
 
     file { '/etc/init.d/mariadb':
         ensure  => 'link',
         target  => "${basedir}/service",
-        require => "${basedir}/service",
+        require => File["${basedir}/service"],
     }
 
     # MySQL DOES NOT START BY DEFAULT- do not register it automatically
