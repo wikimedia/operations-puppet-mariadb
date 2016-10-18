@@ -37,11 +37,4 @@ class mariadb::packages_wmf(
     # New packages include it, but old packages have
     # to be overwritten still
     include mariadb::mysqld_safe
-    # Also create a custom, safer mysql start/stop
-    # script
-    # Required until all packages are updated to
-    # a systemd-compatible binary
-    if ($mariadb10 == true) {
-        include mariadb::service
-    }
 }
