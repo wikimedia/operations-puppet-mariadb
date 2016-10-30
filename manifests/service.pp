@@ -3,8 +3,21 @@
 # package
 # Once all trusty dbs are gone, we can hopefully discard init.d in favour
 # of a custom systemd service unit
+#
+# Default behavior is for the service to be unmanaged and manually
+# started/stopped.
+# It is important to keep this like this for all production services (if
+# mysql and replication start automatically and there has been a crash
+# or an upgrade (hardware or software), data will get corrupted).
+# However, for non critical services (beta, other small, non-dedicated
+# services, we allow mysql to auto-start.
+# With $manage = true this class will set $ensure and $enabled as specified.
+
 class mariadb::service (
     $package = 'wmf-mariadb10',
+    $manage  = false,
+    $ensure  = stopped,
+    $enable  = false,
     ) {
 
     $basedir = "/opt/${package}"
@@ -29,5 +42,12 @@ class mariadb::service (
         require => File["${basedir}/service"],
     }
 
-    # MySQL DOES NOT START BY DEFAULT- do not register it automatically
+    if $manage {
+        service { 'mysql':
+            ensure  => $ensure,
+            enable  => $enable,
+            require => File['/etc/init.d/mysql'],
+        }
+    }
+
 }
