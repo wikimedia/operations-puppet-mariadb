@@ -42,10 +42,19 @@ class mariadb::config(
         group  => 'root',
     }
 
+    file { '/etc/mysql/grcat.config':
+        ensure => present,
+        mode   => '0644',
+        owner  => 'root',
+        group  => 'root',
+        source => 'puppet:///modules/mariadb/grcat.config',
+    }
+
     file { '/etc/mysql/my.cnf':
         ensure  => absent,
         require => File['/etc/mysql'],
     }
+
     file { '/usr/local/etc/my.cnf':
         ensure => absent,
     }
