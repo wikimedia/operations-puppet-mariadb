@@ -28,6 +28,11 @@ class mariadb::config(
 {|total,value| (total << 8 ) + value.to_i} %>"
     )
 
+    $gtid_domain_id = inline_template(
+        "<%= @ipaddress.split('.').inject(0)\
+{|total,value| (total << 8 ) + value.to_i} %>"
+    )
+
     file { '/etc/my.cnf':
         owner   => 'root',
         group   => 'root',
