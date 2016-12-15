@@ -6,5 +6,9 @@ password = <%= @password %>
 socket   = /tmp/mysql.sock
 
 [mysql]
-prompt = 'MariaDB <%= @prompt %> \h \d > '
-pager  = less -niSFX
+<% if @prompt -%>
+prompt = '\u@<%= @prompt %>[\d]> '
+<% else -%>
+prompt = '\u@\h[\d]> '
+<% end -%>
+pager  = "grcat /etc/mysql/grcat.config | less -RSFXin"
