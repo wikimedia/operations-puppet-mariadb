@@ -27,7 +27,7 @@ class mariadb::service (
         group   => 'root',
         mode    => '0755',
         content => template('mariadb/mariadb.server.erb'),
-        require => Package["${package}"],
+        require => Package[$package],
     }
 
     file { '/etc/init.d/mysql':

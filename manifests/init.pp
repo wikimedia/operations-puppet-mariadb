@@ -1,3 +1,5 @@
+# == Class mariadb
+#
 class mariadb {
 
     include mariadb::config
