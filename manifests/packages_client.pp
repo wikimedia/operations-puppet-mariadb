@@ -5,7 +5,7 @@
 class mariadb::packages_client {
 
     package { [
-        'mariadb-client',
+        'wmf-mariadb101-client',
         'percona-toolkit',
         'percona-xtrabackup',
         'grc',
