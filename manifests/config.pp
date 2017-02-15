@@ -9,7 +9,7 @@
 # 'standalone' | 'slave' | 'master' | 'multisource_slave'
 
 class mariadb::config(
-    $config           = 'mariadb/default.my.cnf.erb',
+    $config           = 'role/mariadb/mysqld_config/default.my.cnf.erb',
     $prompt           = '',
     $password         = 'undefined',
     $datadir          = '/srv/sqldata',
