@@ -3,7 +3,12 @@ user     = root
 <% if @password -%>
 password = <%= @password %>
 <% end -%>
-socket   = /tmp/mysql.sock
+
+<% if @labsdb_password -%>
+[labsdb]
+user     = root
+password = <%= @labsdb_password %>
+<% end -%>
 
 [mysql]
 <% if @prompt -%>

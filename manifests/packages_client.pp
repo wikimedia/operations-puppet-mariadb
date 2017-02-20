@@ -10,6 +10,7 @@ class mariadb::packages_client {
         'percona-xtrabackup',
         'grc',
         'python3-pymysql',
+        'python3-tabulate',
     ]:
         ensure => present,
     }
