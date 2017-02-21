@@ -14,6 +14,7 @@ class mariadb::config(
     $password         = 'undefined',
     $datadir          = '/srv/sqldata',
     $tmpdir           = '/srv/tmp',
+    $socket           = '/var/run/mysqld/mysqld.sock',
     $sql_mode         = '',
     $read_only        = 0,
     $p_s              = 'off',
@@ -142,33 +143,16 @@ class mariadb::config(
             backup    => false,
             content   => secret('mysql/server-key.pem'),
         }
-        file { '/etc/mysql/ssl/server-cert.pem':
-            ensure    => file,
-            owner     => 'root',
-            group     => 'mysql',
-            mode      => '0440',
-            show_diff => false,
-            backup    => false,
-            content   => secret('mysql/server-cert.pem'),
-        }
-        file { '/etc/mysql/ssl/client-key.pem':
-            ensure    => file,
-            owner     => 'root',
-            group     => 'mysql',
-            mode      => '0440',
-            show_diff => false,
-            backup    => false,
-            content   => secret('mysql/client-key.pem'),
-        }
-        file { '/etc/mysql/ssl/client-cert.pem':
-            ensure    => file,
-            owner     => 'root',
-            group     => 'mysql',
-            mode      => '0440',
-            show_diff => false,
-            backup    => false,
-            content   => secret('mysql/client-cert.pem'),
-        }
-
     }
+
+    file { '/etc/mysql/ssl/server-cert.pem':
+        ensure => absent,
+    }
+    file { '/etc/mysql/ssl/client-key.pem':
+        ensure => absent,
+    }
+    file { '/etc/mysql/ssl/client-cert.pem':
+        ensure => absent,
+    }
+
 }
