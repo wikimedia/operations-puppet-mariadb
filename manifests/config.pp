@@ -9,19 +9,25 @@
 # 'standalone' | 'slave' | 'master' | 'multisource_slave'
 
 class mariadb::config(
-    $config           = 'role/mariadb/mysqld_config/default.my.cnf.erb',
-    $prompt           = '',
-    $password         = 'undefined',
-    $datadir          = '/srv/sqldata',
-    $tmpdir           = '/srv/tmp',
-    $socket           = '/var/run/mysqld/mysqld.sock',
-    $sql_mode         = '',
-    $read_only        = 0,
-    $p_s              = 'off',
-    $ssl              = 'off',
-    $binlog_format    = 'MIXED',
-    $semi_sync        = 'off',
-    $replication_role = 'standalone',
+    $config                 = 'mariadb/default.my.cnf.erb',
+    $prompt                 = '\u@\h(\d)> ',
+    $password               = 'undefined',
+    $datadir                = '/srv/sqldata',
+    $tmpdir                 = '/srv/tmp',
+    $socket                 = '/var/run/mysqld/mysqld.sock',
+    $port                   = 3306,
+    $sql_mode               = '',
+    $read_only              = 0,
+    $p_s                    = 'off',
+    $ssl                    = 'off',
+    $ssl_ca                 = '',
+    $ssl_cert               = '',
+    $ssl_key                = '',
+    $ssl_verify_server_cert = true,
+    $binlog_format          = 'MIXED',
+    $semi_sync              = 'off',
+    $replication_role       = 'standalone',
+    $max_allowed_packet     = '16M',
     ) {
 
     $server_id = inline_template(
@@ -54,6 +60,13 @@ class mariadb::config(
         owner  => 'root',
         group  => 'root',
         source => 'puppet:///modules/mariadb/grcat.config',
+    }
+
+    file { '/var/run/mysqld':
+        ensure => directory,
+        mode   => '0755',
+        owner  => 'root',
+        group  => 'root',
     }
 
     file { '/etc/mysql/my.cnf':
