@@ -62,11 +62,16 @@ class mariadb::config(
         source => 'puppet:///modules/mariadb/grcat.config',
     }
 
-    file { '/var/run/mysqld':
-        ensure => directory,
-        mode   => '0755',
-        owner  => 'root',
-        group  => 'root',
+    # if the socket location is different from the default, it is the role
+    # class' reponsability to handle it (otherwise this could have side
+    # efects, like changing / or /tmp permissions
+    if $socket == '/var/run/mysqld/mysqld.sock' {
+        file { '/var/run/mysqld':
+            ensure => directory,
+            mode   => '0775',
+            owner  => 'root',
+            group  => 'mysql',
+        }
     }
 
     file { '/etc/mysql/my.cnf':
